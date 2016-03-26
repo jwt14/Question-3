@@ -83,33 +83,25 @@ void validating(int &vIn){
 }
 
 
-int main() {
+int main(int argc, char* argv[]) {
     /*----------------------------- Program description ---------------------------------------------------------------------------------------------------------------*/
 
-    cout << "This is HPC Q3 solution. It provides a solution to a heat equation problem in a form of a temerature vectors." << endl;
-    cout << "It is possible to select either Forward Euler, Backward Euler or Crank-Nicolson solvers depending on theta." << endl;
+    //cout << "This is HPC Q3 solution. It provides a solution to a heat equation problem in a form of a temerature vectors." << endl;
+    //cout << "It is possible to select either Forward Euler, Backward Euler or Crank-Nicolson solvers depending on theta." << endl;
 
     /*----------------------------- Declaring variables and prompting for input with validation -----------------------------------------------------------------------*/
-    double L, T, theta;
-    int N_x,N_t;
-
-    cout << "\nLength of a domain = "; cin >> L; validating(L);
-    cout << "\nNumber of grid points (20, 30 etc): "; cin >> N_x; validating(N_x);      //only even number can be selected!
+    double L=atof(argv[1]);
+	int N_x=atoi(argv[2]);
+	double T=atof(argv[3]);
+	int N_t=atoi(argv[4]);
+	double alpha=atof(argv[5]);
+	double theta=atof(argv[6]);
     double del_x = L/(double(N_x));
-    cout << "\nSpatial step size (del_x) = " << del_x << endl;
-
-    cout << "\nTime of simulation = "; cin >> T; validating(T);
-    cout << "\nNumber of time steps: "; cin >> N_t; validating(N_t);
     double del_t = T/(double(N_t));
-    cout << "\nTime step size (del_x) = " << del_t << endl;
 
-    double alpha;
-    cout << "\nThermal conductivity (alpha) = "; cin >> alpha; validating(alpha);
-    double nu = alpha*(del_t/pow(del_x,2));                                             //calculating Courant number
-    cout << "\nSpecify theta = "; cin >> theta;                                         //asking for Theta parameter
-
+    double nu = alpha*(del_t/pow(del_x,2));
     /*----------------------------- Generating vectors with initial conditions ----------------------------------------------------------------------------------------*/
-    vector<double> u_0, u;                                                              //u_0 stores initial heat distribution;
+    vector<double> u_0, u, u_CN;                                                              //u_0 stores initial heat distribution;
     for(int j=0; j<N_x+1; j++){                                                         //u stores heat at next full time step;
          u_0.push_back(j*del_x-pow(j*del_x,2));                                         //u_CN stores heat at the intermediate step for Crank-Nicolson method.
      }
@@ -139,6 +131,23 @@ int main() {
             u_0 = u;
         }
         print_vector(u,"FEsolution.dat");
+    }
+
+    else if (theta==0.5){
+        cout << "Selected Crank-Nicolson Method" << endl;
+        cout << "\nCourant number is " << nu << " and scheme is unconditionally stable!" << endl << endl;
+
+        TriMatrix A(N_x+2);
+        TriMatrix B(N_x+2);
+        A = I+l*theta*nu;                                   //Generating A matrix with (v/2, 1-v, v/2)
+        B = I-l*theta*nu;                                   //Generating B matrix with (-v/2, 1+v, -v/2)
+
+        for(double k=0;k<N_t;++k){
+            u_CN = A * u_0;                                 //Implementing for loop with overloaded multiplication and inversion operators
+            u = B / u_CN;                                   //Using Crank-Nicolson two-step method
+            u_0 = u;
+        }
+        print_vector(u,"CNsolution.dat");
     }
 
     else if (theta==1){
