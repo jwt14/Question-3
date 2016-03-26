@@ -90,7 +90,7 @@ int main() {
     cout << "It is possible to select either Forward Euler, Backward Euler or Crank-Nicolson solvers depending on theta." << endl;
 
     /*----------------------------- Declaring variables and prompting for input with validation -----------------------------------------------------------------------*/
-    double L, T;
+    double L, T, theta;
     int N_x,N_t;
 
     cout << "\nLength of a domain = "; cin >> L; validating(L);
@@ -106,6 +106,7 @@ int main() {
     double alpha;
     cout << "\nThermal conductivity (alpha) = "; cin >> alpha; validating(alpha);
     double nu = alpha*(del_t/pow(del_x,2));                                             //calculating Courant number
+    cout << "\nSpecify theta = "; cin >> theta;                                         //asking for Theta parameter
 
     /*----------------------------- Generating vectors with initial conditions ----------------------------------------------------------------------------------------*/
     vector<double> u_0, u;                                                              //u_0 stores initial heat distribution;
