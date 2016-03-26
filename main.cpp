@@ -12,7 +12,7 @@
 #include <fstream>
 #include <iterator>
 #include "TriMatrix.h"
-
+#define _USE_MATH_DEFINES
 using namespace std;
 /*----------------------------- Generating Identity and Tri-diagonal Spatial Matrices using help functions ------------------------------------------------------------*/
 TriMatrix MakeIdentityMatrix(int N_x){
@@ -90,12 +90,13 @@ int main(int argc, char* argv[]) {
 	double theta=atof(argv[6]);
     double del_x = L/(double(N_x));
     double del_t = T/(double(N_t));
-
     double nu = alpha*(del_t/pow(del_x,2));
+
+
     /*----------------------------- Generating vectors with initial conditions ----------------------------------------------------------------------------------------*/
     vector<double> u_0, u, u_CN;                                                              //u_0 stores initial heat distribution;
     for(int j=0; j<N_x+1; j++){                                                         //u stores heat at next full time step;
-         u_0.push_back(j*del_x-pow(j*del_x,2));                                         //u_CN stores heat at the intermediate step for Crank-Nicolson method.
+        u_0.push_back(sin(M_PI*j*del_x/L));
      }
 
     /*----------------------------- Generating Identity and Spatial triMatrices using help functions ------------------------------------------------------------------*/
