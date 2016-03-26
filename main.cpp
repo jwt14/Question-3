@@ -87,7 +87,7 @@ int main() {
     /*----------------------------- Program description ---------------------------------------------------------------------------------------------------------------*/
 
     cout << "This is HPC Q3 solution. It provides a solution to a heat equation problem in a form of a temerature vectors." << endl;
-    cout << "Bar length is 1 unit, Number of steps is 100, Time domain is 10 second with 0.001 timestep. Diffusion coefficient is 1." << endl;
+    cout << "It is possible to select either Forward Euler, Backward Euler or Crank-Nicolson solvers depending on theta." << endl;
 
     /*----------------------------- Declaring variables and prompting for input with validation -----------------------------------------------------------------------*/
     double L, T;

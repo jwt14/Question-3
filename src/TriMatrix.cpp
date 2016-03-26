@@ -193,6 +193,25 @@ vector<double> TriMatrix::operator* ( vector<double> U)  {              //Vector
     return u2;
 }
 
+vector<double> TriMatrix::operator/ (vector<double> U)  {               //Matrix ^-1 x Vector operation
+    int n = U.size();                                                   //Using Thomas-Algorithm
+    vector<double> u2(n, 0.0);
+    u2[0]=0.;                                                           //Vector storing results
+    u2[n-1]=0.;
+    double mDiagTemp[n];                                                //Initiating temporary diagonal matrix
+    mDiagTemp[0]=1;
+
+    for(int i=1; i<n; i++){
+        double m = mLower[i-1]/mDiagTemp[i-1];
+        mDiagTemp[i] = mDiag[i] - m*mUpper[i-1];
+        U[i] -= m*U[i-1];
+    }
+    for(int j=n-2; j >= 0; j--){
+        u2[j] = (U[j]- mUpper[j]*u2[j+1])/mDiagTemp[j];
+    }
+    return u2;
+}
+
 void TriMatrix::print() {
     for (unsigned int i = 1; i < mSize; ++i) {
         for (unsigned int j = 1; j < mSize; ++j) {
