@@ -1,0 +1,11 @@
+# depslib dependency file v1.0
+1458990750 source:c:\users\w530\desktop\ae3_422_assessment\question-3\src\trimatrix.cpp
+	<iostream>
+	<iomanip>
+	<cstring>
+	<vector>
+	"TriMatrix.h"
+
+1458990730 c:\users\w530\desktop\ae3_422_assessment\question-3\include\trimatrix.h
+	<vector>
+

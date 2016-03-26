@@ -1,4 +1,4 @@
-#   HPC Q2 
+#   HPC Q3d
 #   Created by Jan Witold Tomaszewski CID: 00833865
 
 import subprocess
@@ -19,7 +19,7 @@ RMSE_const_t= []
 RMSE_const_x = []
     
 for i in range(0,23):
-    data = subprocess.Popen("./multi {} {} {} {} {} {}".format(L, N_x[0], T, N_t[i], alpha, theta),
+    data = subprocess.Popen("./q3 {} {} {} {} {} {}".format(L, N_x[0], T, N_t[i], alpha, theta),
                             stdout=subprocess.PIPE).communicate()[0]
     a=data.split('\n')
     d_x = L/float(N_x[0])
@@ -36,7 +36,7 @@ for i in range(0,23):
     RMSE_const_x.append(sqrt(error/(N_x[0]+1)))
     
 for i in range(0,9):
-    data = subprocess.Popen("./multi {} {} {} {} {} {}".format(L, N_x[i], T, N_t[0], alpha, theta),
+    data = subprocess.Popen("./q3 {} {} {} {} {} {}".format(L, N_x[i], T, N_t[0], alpha, theta),
                             stdout=subprocess.PIPE).communicate()[0]
     a=data.split('\n')
     d_x = L/float(N_x[i])
