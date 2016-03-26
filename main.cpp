@@ -46,9 +46,6 @@ TriMatrix MakeSpatialOpMatrix(int N_x){
 
  /*----------------------------- Printing and input-validating functions for both doubles and integers ----------------------------------------------------------------*/
 void print_vector(vector<double> U, const char vector_filename[128]){
-    ofstream output_file(vector_filename);
-    ostream_iterator<double> output_iterator(output_file, "\n");        //Final solution is saved as a text file
-    copy(U.begin(), U.end(), output_iterator);
     int m = U.size();
     cout << "The final solution is:" << endl;                           //Final solution is printed to a terminal
     for (int i=0;i<m;++i){
@@ -84,11 +81,6 @@ void validating(int &vIn){
 
 
 int main(int argc, char* argv[]) {
-    /*----------------------------- Program description ---------------------------------------------------------------------------------------------------------------*/
-
-    //cout << "This is HPC Q3 solution. It provides a solution to a heat equation problem in a form of a temerature vectors." << endl;
-    //cout << "It is possible to select either Forward Euler, Backward Euler or Crank-Nicolson solvers depending on theta." << endl;
-
     /*----------------------------- Declaring variables and prompting for input with validation -----------------------------------------------------------------------*/
     double L=atof(argv[1]);
 	int N_x=atoi(argv[2]);
@@ -115,13 +107,6 @@ int main(int argc, char* argv[]) {
 
     /*----------------------------- Selecting solver type based on theta value  ---------------------------------------------------------------------------------------*/
     if (theta==0){
-        cout << "Selected Forward Euler Method" << endl;
-        if (nu >= 0.5){
-        cout << "\nCourant number is " << nu << " and scheme is unstable!" << endl << endl;
-        }
-        else{
-        cout << "\nCourant number is " << nu << " and scheme is stable!" << endl << endl;
-        }
 
         TriMatrix A(N_x+2);
         A = I+l*nu;                                            //Generating A matrix with (v, 1-2v, v)
@@ -129,14 +114,12 @@ int main(int argc, char* argv[]) {
         for(double k=0;k<N_t;++k){
             u = A * u_0;                                    //Implementing for loop with an overloaded vector-matrix multiplication
             u_0 = u;
+            print_vector(u,"FEsolution.dat");
         }
-        print_vector(u,"FEsolution.dat");
+
     }
 
     else if (theta==0.5){
-        cout << "Selected Crank-Nicolson Method" << endl;
-        cout << "\nCourant number is " << nu << " and scheme is unconditionally stable!" << endl << endl;
-
         TriMatrix A(N_x+2);
         TriMatrix B(N_x+2);
         A = I+l*theta*nu;                                   //Generating A matrix with (v/2, 1-v, v/2)
@@ -146,22 +129,21 @@ int main(int argc, char* argv[]) {
             u_CN = A * u_0;                                 //Implementing for loop with overloaded multiplication and inversion operators
             u = B / u_CN;                                   //Using Crank-Nicolson two-step method
             u_0 = u;
+            print_vector(u,"CNsolution.dat");
         }
-        print_vector(u,"CNsolution.dat");
+
     }
 
     else if (theta==1){
-        cout << "Selected Backward Euler Method" << endl;
-        cout << "\nCourant number is " << nu << " and scheme is unconditionally stable!" << endl << endl;
-
         TriMatrix A(N_x+2);
         A = I-l*nu;                                            //Generating A matrix with (-v, 1+v, -v)
 
         for(double k=0;k<N_t;++k){
             u = A / u_0;                                    //Implementing for loop with an overloaded matrix inversion operator.
             u_0 = u;
+            print_vector(u,"BEsolution.dat");
         }
-        print_vector(u,"BEsolution.dat");
+
     }
 
     else{
