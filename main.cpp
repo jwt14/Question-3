@@ -117,17 +117,46 @@ int main() {
     /*----------------------------- Generating Identity and Spatial triMatrices using help functions ------------------------------------------------------------------*/
     TriMatrix I(N_x+2);
     TriMatrix l(N_x+2);
-    TriMatrix A(N_x+2);
 
-    l = MakeSpatialOpMatrix(N_x);                                                   //Lowercase l as uppercase is reserved for bar length!
+    l = MakeSpatialOpMatrix(N_x);                       //Lowercase l as uppercase is reserved for bar length!
     I = MakeIdentityMatrix(N_x);
-    A = I+l*nu;                                                                            //Generating A matrix with (v, 1-2v, v)
 
-    for(double k=0;k<N_t;++k){
-        u = A * u_0;                                                                    //Implementing for loop with an overloaded vector-matrix multiplication
-        u_0 = u;
+    /*----------------------------- Selecting solver type based on theta value  ---------------------------------------------------------------------------------------*/
+    if (theta==0){
+        cout << "Selected Forward Euler Method" << endl;
+        if (nu >= 0.5){
+        cout << "\nCourant number is " << nu << " and scheme is unstable!" << endl << endl;
+        }
+        else{
+        cout << "\nCourant number is " << nu << " and scheme is stable!" << endl << endl;
+        }
+
+        TriMatrix A(N_x+2);
+        A = I+l*nu;                                            //Generating A matrix with (v, 1-2v, v)
+
+        for(double k=0;k<N_t;++k){
+            u = A * u_0;                                    //Implementing for loop with an overloaded vector-matrix multiplication
+            u_0 = u;
+        }
+        print_vector(u,"FEsolution.dat");
     }
-    print_vector(u,"FEsolution.dat");
 
+    else if (theta==1){
+        cout << "Selected Backward Euler Method" << endl;
+        cout << "\nCourant number is " << nu << " and scheme is unconditionally stable!" << endl << endl;
+
+        TriMatrix A(N_x+2);
+        A = I-l*nu;                                            //Generating A matrix with (-v, 1+v, -v)
+
+        for(double k=0;k<N_t;++k){
+            u = A / u_0;                                    //Implementing for loop with an overloaded matrix inversion operator.
+            u_0 = u;
+        }
+        print_vector(u,"BEsolution.dat");
+    }
+
+    else{
+        cout << "Invalid value of theta. Try again by selecting either 0, 0.5 or 1." << endl;
+    }
     return 0;
 }
